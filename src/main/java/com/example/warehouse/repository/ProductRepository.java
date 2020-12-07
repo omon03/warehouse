@@ -11,7 +11,7 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "product", path = "product")
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
 
-    List<Product> findByName(@Param("name") String name);
+    Product findByName(@Param("name") String name);
     List<Product> findByShortName(@Param("shortName") String shortName);
     Optional<Product> findAllByShortName(@Param("shortName")  String shortName);
 }

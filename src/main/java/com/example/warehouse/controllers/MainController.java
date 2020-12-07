@@ -1,6 +1,8 @@
 package com.example.warehouse.controllers;
 
+import com.example.warehouse.models.OperationType;
 import com.example.warehouse.models.Product;
+import com.example.warehouse.models.ProductMovement;
 import com.example.warehouse.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+//import java.util.Date;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +29,23 @@ public class MainController {
         Product product = new Product(name);
         productRepository.save(product);
 
+        return "redirect:/";
+    }
+
+    @PostMapping
+    public String movementOfGoods(
+            @RequestParam String name,
+            @RequestParam Date date,
+            @RequestParam int count) {
+
+        if (0 == count)
+            return "redirect:/";
+
+        ProductMovement productMovement = new ProductMovement(
+                productRepository.findByName(name),
+                count > 0 ? OperationType.DELIVERY_OF_GOODS : OperationType.WRITE_OF_GOODS,
+                date,
+                Math.abs(count));
         return "redirect:/";
     }
 

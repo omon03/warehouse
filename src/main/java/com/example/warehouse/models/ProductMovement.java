@@ -1,7 +1,8 @@
 package com.example.warehouse.models;
 
 import javax.persistence.*;
-import java.util.Date;
+//import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name = "PRODUCT_MOVEMENT")
@@ -17,15 +18,17 @@ public class ProductMovement {
 
     private OperationType operationType;
     private Date date;
-    private int count;
+    private int changeInQuantity;
 
     protected ProductMovement() { }
 
-    public ProductMovement(Product product, OperationType operationType, Date date, int count) {
-        this.product = product;
+    public ProductMovement(Product product, OperationType operationType, Date date, int changeInQuantity) {
+        this.product = product;  // TODO
         this.operationType = operationType;
+        this.product.setTotalAmount( this.product.getTotalAmount() + (
+                operationType.equals(OperationType.DELIVERY_OF_GOODS) ? changeInQuantity : -changeInQuantity) );
         this.date = date;
-        this.count = count;
+        this.changeInQuantity = changeInQuantity;
     }
 
     public String getProductName() {
@@ -56,11 +59,11 @@ public class ProductMovement {
         this.date = date;
     }
 
-    public int getCount() {
-        return count;
+    public int getChangeInQuantity() {
+        return changeInQuantity;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setChangeInQuantity(int changeInQuantity) {
+        this.changeInQuantity = changeInQuantity;
     }
 }
