@@ -2,23 +2,30 @@
 
 <body>
 <div>
-    <form method="post">
-        <input type="text" name="text" placeholder="Введите сообщение" />
-        <input type="text" name="tag" placeholder="Тэг">
+    <form method="post" action="add">
+        <input type="text" name="name" placeholder="Введите имя товара" />
+        <input type="text" name="shortname" placeholder="Введите короткое имя">
+<!--        <br>-->
+        <input type="text" name="characteristics" placeholder="Введите описание">
         <button type="submit">Добавить</button>
     </form>
+    <form method="post" action="del">
+        <input type="text" name="id" placeholder="Введите id товара" />
+        <button type="submit">Удалить</button>
+    </form>
 </div>
-<div>Список сообщений</div>
+<div>Список товаров</div>
 <form method="post" action="filter">
-    <input type="text" name="filter">
+    <input type="text" name="filter" placeholder="Введите короткое имя">
     <button type="submit">Найти</button>
 </form>
-{{#messages}}
+{{#products}}
     <div>
         <b>{{id}}</b>
-        <span>{{text}}</span>
-        <i>{{tag}}</i>
+        <span>{{name}}</span>
+        <i>{{shortName}}</i>
+        <span>{{characteristics}}</span>
     </div>
-{{/messages}}
+{{/products}}
 </body>
 </html>

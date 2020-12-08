@@ -13,27 +13,25 @@ public class Product {
     @Column(unique = true)
     private String name;
 
-    private int totalAmount;
+    private int totalAmount = 0;
     private String shortName;
     private String characteristics;
+
     protected Product() { }
 
     public Product(String name) {
         this.name = name;
-        this.totalAmount = 0;
     }
 
     public Product(String name, String shortName) {
         this.name = name;
         this.shortName = shortName;
-        this.totalAmount = 0;
     }
 
     public Product(String name, String shortName, String characteristics) {
         this.name = name;
         this.shortName = shortName;
         this.characteristics = characteristics;
-        this.totalAmount = 0;
     }
 
     public String getName() {
