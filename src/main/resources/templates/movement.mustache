@@ -1,0 +1,52 @@
+<html>
+
+<body>
+<div>
+    <a href="/main">На главную</a>
+</div>
+
+<div>
+    <div>Поступление</div>
+    <form method="post" action="receipt">
+        <input type="text" name="id" placeholder="Введите id товара" /><br>
+        <input type="text" name="date" placeholder="Введите дату"><br>
+        <input type="text" name="changeInQuantity" placeholder="Введите кол-во"><br><br>
+        <button type="submit">Создать поступление</button>
+    </form>
+    <div>Списание</div>
+    <form method="post" action="departure">
+        <input type="text" name="id" placeholder="Введите id товара" /><br>
+        <input type="text" name="date" placeholder="Введите дату"><br>
+        <input type="text" name="changeInQuantity" placeholder="Введите кол-во"><br><br>
+        <button type="submit">Списать</button>
+    </form>
+    <div>Изменить транзакцию</div>
+    <form method="post" action="changemove">
+        <input type="text" name="idmove" placeholder="Введите id транзакции" /><br>
+        <input type="text" name="id" placeholder="Введите id товара" /><br>
+        <input type="text" name="date" placeholder="Введите дату"><br>
+        <input type="text" name="changeInQuantity" placeholder="Введите кол-во"><br><br>
+        <button type="submit">Изменить</button>
+    </form>
+    <div>Удалить транзакцию</div>
+    <form method="post" action="del">
+        <input type="text" name="idmove" placeholder="Введите id транзакции" />
+        <button type="submit">Удалить</button>
+    </form>
+</div>
+<div>Список товаров</div>
+<form method="post" action="filter">
+    <input type="text" name="filter" placeholder="Введите короткое имя">
+    <button type="submit">Найти</button>
+</form>
+{{#products}}
+    <div>
+        <b>{{id}}</b>
+        <span>{{name}}</span>
+        <i>{{shortName}}</i>
+        <span>{{characteristics}}</span>
+        <i>{{totalAmount}}</i>
+    </div>
+{{/products}}
+</body>
+</html>

@@ -26,7 +26,7 @@ public class ProductMovement {
         this.product = product;  // TODO
         this.operationType = operationType;
         this.product.setTotalAmount( this.product.getTotalAmount() + (
-                operationType.equals(OperationType.DELIVERY_OF_GOODS) ? changeInQuantity : -changeInQuantity) );
+                operationType.equals(OperationType.RECEIPT_OF_GOODS) ? changeInQuantity : -changeInQuantity) );
         this.date = date;
         this.changeInQuantity = changeInQuantity;
     }

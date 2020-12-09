@@ -1,22 +1,16 @@
 package com.example.warehouse.controllers;
 
-import com.example.warehouse.models.OperationType;
 import com.example.warehouse.models.Product;
-import com.example.warehouse.models.ProductMovement;
 import com.example.warehouse.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-//import java.util.Date;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+//import java.util.Date;
 
 @Controller
 public class MainController {
@@ -24,7 +18,7 @@ public class MainController {
     @Autowired
     private ProductRepository productRepository;
 
-    @GetMapping
+    @GetMapping("main")
     public String main(Map<String, Object> model) {
 
         Iterable<Product> products = productRepository.findAll();
@@ -36,7 +30,7 @@ public class MainController {
     @PostMapping("add")
     public String productAdd(
             @RequestParam(name = "name") String name,
-            @RequestParam(name = "shortname", required = false, defaultValue = "") String shortName,
+            @RequestParam(name = "shortName", required = false, defaultValue = "") String shortName,
             @RequestParam(name = "characteristics", required = false, defaultValue = "") String characteristics,
             Map<String, Object> model) {
 
@@ -44,6 +38,37 @@ public class MainController {
             Product product = new Product(name, shortName, characteristics);
             productRepository.save(product);
         }
+
+        Iterable<Product> products = productRepository.findAll();
+        model.put("products", products);
+
+        return "main";
+    }
+
+    @PostMapping("change")
+    public String productChange(
+            @RequestParam(name = "id") String id,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "shortName", required = false, defaultValue = "") String shortName,
+            @RequestParam(name = "characteristics", required = false, defaultValue = "") String characteristics,
+            Map<String, Object> model) {
+
+        try {
+            if ( productRepository.findById(Long.parseLong(id)).isPresent() ) {
+                Product product = productRepository.findById(Long.parseLong(id)).get();
+
+                if (null != name && null == productRepository.findByName(name))
+                    product.setName(name);
+
+                if (null != shortName)
+                    product.setShortName(shortName);
+
+                if (null != characteristics)
+                    product.setCharacteristics(characteristics);
+
+                productRepository.save(product);
+            }
+        } catch (Exception ignore) {}
 
         Iterable<Product> products = productRepository.findAll();
         model.put("products", products);

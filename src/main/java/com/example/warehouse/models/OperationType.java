@@ -1,6 +1,6 @@
 package com.example.warehouse.models;
 
 public enum OperationType {
-    DELIVERY_OF_GOODS,  // поступление
-    WRITE_OF_GOODS;  // списание
+    RECEIPT_OF_GOODS,  // поступление
+    DEPARTURE_OF_GOODS;  // списание
 }

@@ -15,4 +15,5 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Product findByName(@Param("name") String name);
     List<Product> findByShortName(@Param("shortName") String shortName);
     Optional<Product> findAllByShortName(@Param("shortName")  String shortName);
+
 }
