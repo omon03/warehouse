@@ -23,7 +23,7 @@ public class ProductMovement {
     protected ProductMovement() { }
 
     public ProductMovement(Product product, OperationType operationType, Date date, int changeInQuantity) {
-        this.product = product;  // TODO
+        this.product = product;
         this.operationType = operationType;
         this.product.setTotalAmount( this.product.getTotalAmount() + (
                 operationType.equals(OperationType.RECEIPT_OF_GOODS) ? changeInQuantity : -changeInQuantity) );

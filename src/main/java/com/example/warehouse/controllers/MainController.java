@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-//import java.util.Date;
-
 @Controller
 public class MainController {
 
@@ -108,76 +106,4 @@ public class MainController {
 
         return "main";
     }
-
-//    @PostMapping
-//    public String movementOfGoods(
-//            @RequestParam String name,
-//            @RequestParam Date date,
-//            @RequestParam int count) {
-//
-//        if (0 == count)
-//            return "redirect:/";
-//
-//        ProductMovement productMovement = new ProductMovement(
-//                productRepository.findByName(name),
-//                count > 0 ? OperationType.DELIVERY_OF_GOODS : OperationType.WRITE_OF_GOODS,
-//                date,
-//                Math.abs(count));
-//        return "redirect:/";
-//    }
-
-//    @GetMapping("/{id}")
-//    public String productInfo(
-//            @PathVariable(value = "id") long id,
-//            Map<String, Object> model) {
-//        Optional<Product> product = productRepository.findById(id);
-//
-//        ArrayList<Product> products = new ArrayList<>();
-//        product.ifPresent(products::add);
-//
-//        model.put("product", products);
-//        return "product-info";
-//    }
-
-//    @GetMapping("/{id}/update")
-//    public String productUpdate(
-//            @PathVariable(value = "id") long id,
-//            Map<String, Object> model) {
-//        Optional<Product> product = productRepository.findById(id);
-//
-//        ArrayList<Product> products = new ArrayList<>();
-//        product.ifPresent(products::add);
-//
-//        model.put("product", products);
-//        return "product-update";
-//    }
-
-//    @PostMapping("/{id}/update")
-//    public String productUpdateForm(
-//            @PathVariable(value = "id") long id,
-//            @RequestParam String name,
-//            @RequestParam String shortName,
-//            @RequestParam String characteristics) throws ClassNotFoundException {
-//
-//        Product product = productRepository.findById(id).orElseThrow(
-//                ClassNotFoundException::new);
-//
-//        product.setName(name);
-//        product.setShortName(shortName);
-//        product.setCharacteristics(characteristics);
-//        productRepository.save(product);
-//
-//        return "redirect:/product-info" + id;
-//    }
-
-//    @PostMapping("/{id}/delete")
-//    public String productUpdateForm(@PathVariable(value = "id") long id) throws ClassNotFoundException {
-//
-//        Product product = productRepository.findById(id).orElseThrow(
-//                ClassNotFoundException::new);
-//
-//        productRepository.delete(product);
-//
-//        return "redirect:/products" + id;
-//    }
 }

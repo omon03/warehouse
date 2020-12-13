@@ -8,14 +8,14 @@
 <div>
     <div>Поступление</div>
     <form method="post" action="receipt">
-        <input type="text" name="id" placeholder="Введите id товара" /><br>
+        <input type="text" name="idProduct" placeholder="Введите id товара" /><br>
         <input type="text" name="date" placeholder="Введите дату"><br>
         <input type="text" name="changeInQuantity" placeholder="Введите кол-во"><br><br>
         <button type="submit">Создать поступление</button>
     </form>
     <div>Списание</div>
     <form method="post" action="departure">
-        <input type="text" name="id" placeholder="Введите id товара" /><br>
+        <input type="text" name="idProduct" placeholder="Введите id товара" /><br>
         <input type="text" name="date" placeholder="Введите дату"><br>
         <input type="text" name="changeInQuantity" placeholder="Введите кол-во"><br><br>
         <button type="submit">Списать</button>
@@ -39,7 +39,7 @@
     <input type="text" name="filter" placeholder="Введите короткое имя">
     <button type="submit">Найти</button>
 </form>
-{{#products}}
+{{#movements}}
     <div>
         <b>{{id}}</b>
         <span>{{name}}</span>
@@ -47,6 +47,6 @@
         <span>{{characteristics}}</span>
         <i>{{totalAmount}}</i>
     </div>
-{{/products}}
+{{/movements}}
 </body>
 </html>

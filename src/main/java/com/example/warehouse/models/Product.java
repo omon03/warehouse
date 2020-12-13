@@ -34,6 +34,10 @@ public class Product {
         this.characteristics = characteristics;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
