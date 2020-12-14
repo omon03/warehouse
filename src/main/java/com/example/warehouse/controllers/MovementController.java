@@ -43,6 +43,10 @@ public class MovementController {
             if (!idProduct.isEmpty() && productRepository.findById(Long.parseLong(idProduct)).isPresent()) {
 
                 Product product = productRepository.findById(Long.parseLong(idProduct)).get();
+                int totalAmount = product.getTotalAmount();
+                product.setTotalAmount(totalAmount + Integer.parseInt(changeInQuantity));
+                productRepository.save(product);
+
                 ProductMovement productMovement = new ProductMovement(
                         product,
                         OperationType.RECEIPT_OF_GOODS,
@@ -74,6 +78,10 @@ public class MovementController {
             if (productRepository.findById(Long.parseLong(idProduct)).isPresent()) {
 
                 Product product = productRepository.findById(Long.parseLong(idProduct)).get();
+                int totalAmount = product.getTotalAmount();
+                product.setTotalAmount(totalAmount - Integer.parseInt(changeInQuantity));
+                productRepository.save(product);
+
                 ProductMovement productMovement = new ProductMovement(
                         product,
                         OperationType.DEPARTURE_OF_GOODS,
@@ -93,10 +101,43 @@ public class MovementController {
         return "movement";
     }
 
-    @PostMapping("changemove")
+    @PostMapping("delMovement")
+    public String movementDel(
+            @RequestParam(name = "idMovement") String idMovement,
+            Map<String, Object> model) {
+
+        Iterable<ProductMovement> movements;
+
+        try {
+            if (movementRepository.findById(Long.parseLong(idMovement)).isPresent()) {
+
+                ProductMovement productMovement = movementRepository.findById(Long.parseLong(idMovement)).get();
+                Product product = productMovement.getProduct();
+                int totalAmount = product.getTotalAmount();
+                int changeInQuantity = productMovement.getChangeInQuantity();
+                OperationType operationType = productMovement.getOperationType();
+
+                if (operationType.equals(OperationType.RECEIPT_OF_GOODS))
+                    product.setTotalAmount(totalAmount - changeInQuantity);
+                else
+                    product.setTotalAmount(totalAmount + changeInQuantity);
+
+                movementRepository.delete(productMovement);
+                productRepository.save(product);
+            }
+        } catch (NumberFormatException ignore) { }
+
+        movements = movementRepository.findAll();
+        model.put("movements", movements);
+
+        return "movement";
+    }
+
+    @PostMapping("changeMovement")
     public String changeMove(
-            @RequestParam(name = "idmove") String idMove,
+            @RequestParam(name = "idMovement") String idMovement,
             @RequestParam(name = "idProduct") String idProduct,
+            @RequestParam(name = "operationType") String operationType,
             @RequestParam(name = "date") String date,
             @RequestParam(name = "changeInQuantity") String changeInQuantity,
             Map<String, Object> model) {
@@ -104,41 +145,48 @@ public class MovementController {
         Iterable<ProductMovement> movements;
 
         try {
-            if (movementRepository.findById(Long.parseLong(idMove)).isPresent() &&
+            if (movementRepository.findById(Long.parseLong(idMovement)).isPresent() &&
             productRepository.findById(Long.parseLong(idProduct)).isPresent()) {
 
-                ProductMovement productMovementOld = movementRepository.findById(Long.parseLong(idMove)).get();
-                OperationType operationTypeOld = productMovementOld.getOperationType();
-                Product product = productMovementOld.getProduct();
-                int changeInQuantityOld = productMovementOld.getChangeInQuantity();
-                long idProductOld = movementRepository.findById(Long.parseLong(idMove)).get().getProduct().getId();
+                ProductMovement productMovement = movementRepository.findById(Long.parseLong(idMovement)).get();
+                OperationType operationTypeOld = productMovement.getOperationType();
+                Product productOld = productMovement.getProduct();
+                Product productNew = productRepository.findById(Long.parseLong(idProduct)).get();
+                int changeInQuantityOld = productMovement.getChangeInQuantity();
+                long idProductOld = movementRepository.findById(Long.parseLong(idMovement)).get().getProduct().getId();
+                int totalAmountOld = productOld.getTotalAmount();
 
                 // если меняется продукт, убрать изменения по остаткам старого продукта
-                if (idProductOld != Long.parseLong(idProduct)) {
+                if (productOld != productNew) {
 
-                    ProductMovement productMovement;
+                    int totalAmountNew = productNew.getTotalAmount();
 
-                    if (operationTypeOld.equals(OperationType.RECEIPT_OF_GOODS))
-                        productMovement = new ProductMovement(
-                                product,
-                                OperationType.DEPARTURE_OF_GOODS,
-                                Date.valueOf(date),
-                                changeInQuantityOld);
+                    if (operationTypeOld.equals(OperationType.RECEIPT_OF_GOODS)) {
+                        productNew.setTotalAmount(totalAmountNew + Integer.parseInt(changeInQuantity));
+                        productOld.setTotalAmount(totalAmountOld - changeInQuantityOld);
+                    } else {
+                        productNew.setTotalAmount(totalAmountNew - Integer.parseInt(changeInQuantity));
+                        productOld.setTotalAmount(totalAmountOld + changeInQuantityOld);
+                    }
+
+                    productMovement.setProduct(productNew);
+                    productRepository.save(productOld);
+                    productRepository.save(productNew);
+                } else {
+
+                    if (operationType.equals(OperationType.RECEIPT_OF_GOODS.toString()))
+                        productOld.setTotalAmount(totalAmountOld + Integer.parseInt(changeInQuantity));
                     else
-                        productMovement = new ProductMovement(
-                                product,
-                                operationTypeOld,
-                                Date.valueOf(date),
-                                changeInQuantityOld);
+                        productOld.setTotalAmount(totalAmountOld - Integer.parseInt(changeInQuantity));
 
-                    movementRepository.save(productMovement);
-                }
-                else {  // TODO
-
-                    productMovementOld.setDate(Date.valueOf(date));
+                    productRepository.save(productOld);
                 }
 
-                movements = movementRepository.findAllByProduct(product);
+                productMovement.setOperationType(OperationType.valueOf(operationType));
+                productMovement.setDate(Date.valueOf(date));
+                productMovement.setChangeInQuantity(Integer.parseInt(changeInQuantity));
+                movementRepository.save(productMovement);
+                movements = movementRepository.findAllByProduct(productOld);
             } else
                 movements = movementRepository.findAll();
         } catch (NumberFormatException ignore) {
