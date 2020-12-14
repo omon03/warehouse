@@ -16,13 +16,13 @@ public class ProductMovement {
     @JoinColumn(name = "goods_id")
     private Product product;
 
-    private OperationType operationType;
-    private Date date;
+    private String operationType;
+    private String date;
     private int changeInQuantity;
 
     protected ProductMovement() { }
 
-    public ProductMovement(Product product, OperationType operationType, Date date, int changeInQuantity) {
+    public ProductMovement(Product product, String operationType, String date, int changeInQuantity) {
         this.product = product;
         this.operationType = operationType;
         this.date = date;
@@ -41,19 +41,19 @@ public class ProductMovement {
         this.product = product;
     }
 
-    public OperationType getOperationType() {
+    public String getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(OperationType operationType) {
+    public void setOperationType(String operationType) {
         this.operationType = operationType;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

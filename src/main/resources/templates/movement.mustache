@@ -34,18 +34,18 @@
         <button type="submit">Удалить</button>
     </form>
 </div>
-<div>Список товаров</div>
-<form method="post" action="filter">
-    <input type="text" name="filter" placeholder="Введите короткое имя">
+<div>Список транзакций</div>
+<form method="post" action="filterMovement">
+    <input type="text" name="filterMovement" placeholder="Введите id товара">
     <button type="submit">Найти</button>
 </form>
 {{#movements}}
     <div>
         <b>{{id}}</b>
-        <span>{{name}}</span>
-        <i>{{shortName}}</i>
-        <span>{{characteristics}}</span>
-        <i>{{totalAmount}}</i>
+        <span>{{product}}</span>
+        <i>{{operationType}}</i>
+        <span>{{date}}</span>
+        <i>{{changeInQuantity}}</i>
     </div>
 {{/movements}}
 </body>

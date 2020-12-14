@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class MovementController {
@@ -49,8 +49,8 @@ public class MovementController {
 
                 ProductMovement productMovement = new ProductMovement(
                         product,
-                        OperationType.RECEIPT_OF_GOODS,
-                        Date.valueOf(date),
+                        OperationType.RECEIPT_OF_GOODS.toString(),
+                        date,
                         Integer.parseInt(changeInQuantity));
                 movementRepository.save(productMovement);
 
@@ -84,8 +84,8 @@ public class MovementController {
 
                 ProductMovement productMovement = new ProductMovement(
                         product,
-                        OperationType.DEPARTURE_OF_GOODS,
-                        Date.valueOf(date),
+                        OperationType.DEPARTURE_OF_GOODS.toString(),
+                        date,
                         Integer.parseInt(changeInQuantity));
                 movementRepository.save(productMovement);
 
@@ -115,9 +115,9 @@ public class MovementController {
                 Product product = productMovement.getProduct();
                 int totalAmount = product.getTotalAmount();
                 int changeInQuantity = productMovement.getChangeInQuantity();
-                OperationType operationType = productMovement.getOperationType();
+                String operationType = productMovement.getOperationType();
 
-                if (operationType.equals(OperationType.RECEIPT_OF_GOODS))
+                if (operationType.equals(OperationType.RECEIPT_OF_GOODS.toString()))
                     product.setTotalAmount(totalAmount - changeInQuantity);
                 else
                     product.setTotalAmount(totalAmount + changeInQuantity);
@@ -149,11 +149,10 @@ public class MovementController {
             productRepository.findById(Long.parseLong(idProduct)).isPresent()) {
 
                 ProductMovement productMovement = movementRepository.findById(Long.parseLong(idMovement)).get();
-                OperationType operationTypeOld = productMovement.getOperationType();
+                String operationTypeOld = productMovement.getOperationType();
                 Product productOld = productMovement.getProduct();
                 Product productNew = productRepository.findById(Long.parseLong(idProduct)).get();
                 int changeInQuantityOld = productMovement.getChangeInQuantity();
-                long idProductOld = movementRepository.findById(Long.parseLong(idMovement)).get().getProduct().getId();
                 int totalAmountOld = productOld.getTotalAmount();
 
                 // если меняется продукт, убрать изменения по остаткам старого продукта
@@ -161,7 +160,7 @@ public class MovementController {
 
                     int totalAmountNew = productNew.getTotalAmount();
 
-                    if (operationTypeOld.equals(OperationType.RECEIPT_OF_GOODS)) {
+                    if (operationTypeOld.equals(OperationType.RECEIPT_OF_GOODS.toString())) {
                         productNew.setTotalAmount(totalAmountNew + Integer.parseInt(changeInQuantity));
                         productOld.setTotalAmount(totalAmountOld - changeInQuantityOld);
                     } else {
@@ -182,8 +181,8 @@ public class MovementController {
                     productRepository.save(productOld);
                 }
 
-                productMovement.setOperationType(OperationType.valueOf(operationType));
-                productMovement.setDate(Date.valueOf(date));
+                productMovement.setOperationType(OperationType.valueOf(operationType).toString());
+                productMovement.setDate(date);
                 productMovement.setChangeInQuantity(Integer.parseInt(changeInQuantity));
                 movementRepository.save(productMovement);
                 movements = movementRepository.findAllByProduct(productOld);
@@ -192,6 +191,21 @@ public class MovementController {
         } catch (NumberFormatException ignore) {
             movements = movementRepository.findAll();
         }
+
+        model.put("movements", movements);
+
+        return "movement";
+    }
+
+    @PostMapping("filterMovement")
+    public String filter(@RequestParam(name = "filterMovement", required = false) String filter, Map<String, Object> model) {
+
+        Iterable<ProductMovement> movements;
+
+        if (filter != null && !filter.isEmpty() && productRepository.findById(Long.parseLong(filter)).isPresent())
+            movements = movementRepository.findAllByProduct(productRepository.findById(Long.parseLong(filter)).get());
+        else
+            movements = movementRepository.findAll();
 
         model.put("movements", movements);
 
